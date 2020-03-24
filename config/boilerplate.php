@@ -12,8 +12,15 @@ return [
         // here you can specify some validation rules for your sign-in request
         'validation_rules' => [
             'name' => 'required',
+            'lastname' => 'required',
+            'gender' => 'required',
+            'birth' => 'required',
+            'address' => 'required',
+            'district' => 'required',
+            'county' => 'required',
+            'nickname' => 'required',
             'email' => 'required|email',
-            'password' => 'required'
+            'password' => 'required',
         ]
     ],
 

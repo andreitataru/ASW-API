@@ -18,6 +18,17 @@ $api->version('v1', function (Router $api) {
         $api->get('me', 'App\\Api\\V1\\Controllers\\UserController@me');
     });
 
+    $api->group(['middleware' => 'admin'], function(Router $api) {
+
+        $api->get('GetAllUsers', 'App\\Api\\V1\\Controllers\\UserController@GetAllUsers');
+
+        $api->get('isAdmin', function() {
+            return response()->json([
+                'message' => TRUE
+            ]);
+        });
+    });
+
     $api->group(['middleware' => 'jwt.auth'], function(Router $api) {
         $api->get('protected', function() {
             return response()->json([
