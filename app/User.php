@@ -6,6 +6,7 @@ use Hash;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Tymon\JWTAuth\Contracts\JWTSubject;
+use Illuminate\Support\Facades\File;
 
 class User extends Authenticatable implements JWTSubject
 {
@@ -17,7 +18,7 @@ class User extends Authenticatable implements JWTSubject
      * @var array
      */
     protected $fillable = [
-        'name', 'lastname', 'gender', 'address', 'county', 'nickname', 'district', 'email', 'password', 'birth'
+        'name', 'lastname', 'gender', 'address', 'county', 'nickname', 'district', 'email', 'password', 'birth', 'role'
     ];
 
     /**
@@ -26,7 +27,7 @@ class User extends Authenticatable implements JWTSubject
      * @var array
      */
     protected $hidden = [
-        'password', 'remember_token',
+        'password', 'remember_token', 'isAdmin', "created_at", "updated_at"
     ];
 
     /**
@@ -38,6 +39,24 @@ class User extends Authenticatable implements JWTSubject
     public function setPasswordAttribute($value)
     {
         $this->attributes['password'] = Hash::make($value);
+    }
+
+    public function avatar()
+    {
+        $user_avatar = $this->id;
+        $filename = storage_path('app/public/' . $user_avatar . '.jpg');
+
+        \Log::debug($filename);
+
+        if (File::exists($filename)) {
+            $path = 'storage/' . $user_avatar . '.jpg';
+
+        } else {
+            $path = 'storage/user.jpg';
+        }
+        \Log::debug($path);
+
+        return url($path);
     }
 
     /**

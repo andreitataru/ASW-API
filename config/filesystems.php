@@ -41,27 +41,14 @@ return [
     |
     */
 
+
     'disks' => [
-
-        'local' => [
-            'driver' => 'local',
-            'root' => storage_path('app'),
-        ],
-
         'public' => [
             'driver' => 'local',
-            'root' => storage_path('app/public'),
+            'root'   => public_path() . '/storage',
+            'url' => env('APP_URL').'/public',
             'visibility' => 'public',
-        ],
-
-        's3' => [
-            'driver' => 's3',
-            'key' => 'your-key',
-            'secret' => 'your-secret',
-            'region' => 'your-region',
-            'bucket' => 'your-bucket',
-        ],
-
-    ],
+         ]
+     ]
 
 ];

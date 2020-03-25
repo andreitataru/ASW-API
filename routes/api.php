@@ -18,16 +18,27 @@ $api->version('v1', function (Router $api) {
         $api->get('me', 'App\\Api\\V1\\Controllers\\UserController@me');
     });
 
-    $api->group(['middleware' => 'admin'], function(Router $api) {
 
-        $api->get('GetAllUsers', 'App\\Api\\V1\\Controllers\\UserController@GetAllUsers');
+    $api->group(['prefix' => 'admin'], function(Router $api) {
+        $api->group(['middleware' => 'admin'], function(Router $api) {
 
-        $api->get('isAdmin', function() {
-            return response()->json([
-                'message' => TRUE
-            ]);
-        });
+            $api->get('GetAllUsers', 'App\\Api\\V1\\Controllers\\UserController@GetAllUsers');
+
+            $api->get('isAdmin', function() {
+                return response()->json([
+                    'message' => TRUE
+                ]);
+            });
+        }); 
     });
+
+    $api->group(['middleware' => 'api.auth'], function (Router $api) {
+        // With valid token
+        $api->get('avatar', 'App\\Api\\V1\\Controllers\\AvatarController@index');
+        $api->post('updateAvatar', 'App\\Api\\V1\\Controllers\\UserController@updateAvatar');
+    });
+
+
 
     $api->group(['middleware' => 'jwt.auth'], function(Router $api) {
         $api->get('protected', function() {

@@ -21,6 +21,7 @@ return [
             'nickname' => 'required',
             'email' => 'required|email',
             'password' => 'required',
+            'role' => 'required',
         ]
     ],
 
