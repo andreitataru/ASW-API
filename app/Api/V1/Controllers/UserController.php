@@ -51,11 +51,12 @@ class UserController extends Controller
 
         $user = Auth::user();
 
-        $avatarName = $user->id.'.'.request()->avatar->getClientOriginalExtension();
+        $avatarName = 'a'.$user->id.'.'.request()->avatar->getClientOriginalExtension();
 
         $file = $request->file('avatar');
 
-        Storage::disk('public')->put($avatarName, File::get($file));
+        $destinationPath = 'uploads';
+        $file->move($destinationPath, $avatarName);
 
         $user->avatar = $avatarName;
         $user->save();

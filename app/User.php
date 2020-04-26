@@ -3,6 +3,7 @@
 namespace App;
 
 use Hash;
+use Auth;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Tymon\JWTAuth\Contracts\JWTSubject;
@@ -43,18 +44,9 @@ class User extends Authenticatable implements JWTSubject
 
     public function avatar()
     {
-        $user_avatar = $this->id;
-        $filename = storage_path('app/public/' . $user_avatar . '.jpg');
-
-        \Log::debug($filename);
-
-        if (File::exists($filename)) {
-            $path = 'storage/' . $user_avatar . '.jpg';
-
-        } else {
-            $path = 'storage/user.jpg';
-        }
-        \Log::debug($path);
+        $user = Auth::user();
+        $avatar = $user->avatar;
+        $path = 'uploads/' . $avatar;
 
         return url($path);
     }
