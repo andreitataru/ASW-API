@@ -36,6 +36,8 @@ $api->version('v1', function (Router $api) {
         // With valid token
         $api->get('avatar', 'App\\Api\\V1\\Controllers\\AvatarController@index');
         $api->post('updateAvatar', 'App\\Api\\V1\\Controllers\\UserController@updateAvatar');
+        $api->post('addDish', 'App\\Api\\V1\\Controllers\\DishController@addDish');
+        $api->get('getAllDishes', 'App\\Api\\V1\\Controllers\\DishController@getAllDishes');
     });
 
 
