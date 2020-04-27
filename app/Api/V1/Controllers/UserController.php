@@ -43,6 +43,22 @@ class UserController extends Controller
         return $users;
     }
 
+    public function changeType(Request $request)
+    {
+        $user = Auth::user();
+        if ($request->newType == "Vendor" || $request->newType == "Client" || $request->newType == "Both"){
+            $user->type = $request->newType;
+            $user->save();
+            return response()->json([
+                'status' => 'ok',
+            ]);
+        }else {
+            return response()->json([
+                'status' => 'Error: Only Vendor/Client/Both allowed types',
+            ]);
+        }
+    }
+
     public function updateAvatar(Request $request){
 
         $request->validate([
@@ -57,6 +73,10 @@ class UserController extends Controller
 
         $destinationPath = 'uploads';
         $file->move($destinationPath, $avatarName);
+        
+        if ($user->avatar != 'user.jpg'){
+            unlink(public_path('uploads/'.$user->avatar));
+        }
 
         $user->avatar = $avatarName;
         $user->save();

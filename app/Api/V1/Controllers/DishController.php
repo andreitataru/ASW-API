@@ -43,4 +43,37 @@ class DishController extends Controller
         return response()
         ->json($dishes);  
     }
+
+    public function getUserDishes(Request $request)
+    {
+        $dishes = \DB::table('dishes')->where('userId', $request->userId)->get();
+
+        return response()
+        ->json($dishes);  
+    }
+    
+    public function updateDishImg(Request $request){
+
+        $request->validate([
+            'img' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:12048',
+        ]);
+
+        $dish = \DB::table('dishes')->where('id', $request->id)->first();
+
+        $imageName = date('mdYHis') . uniqid(). '.' .request()->img->getClientOriginalExtension();
+        $file = $request->file('img');
+        $destinationPath = 'uploads/dishes/';
+        $file->move($destinationPath, $imageName);
+
+        \DB::table('dishes')
+        ->where('id', $request->id)
+        ->update(['img' => url($destinationPath . $imageName)]);
+
+        return response()->json([
+            'status' => 'ok',
+        ]);
+
+    }
+
+
 }

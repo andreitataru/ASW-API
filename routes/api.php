@@ -38,6 +38,9 @@ $api->version('v1', function (Router $api) {
         $api->post('updateAvatar', 'App\\Api\\V1\\Controllers\\UserController@updateAvatar');
         $api->post('addDish', 'App\\Api\\V1\\Controllers\\DishController@addDish');
         $api->get('getAllDishes', 'App\\Api\\V1\\Controllers\\DishController@getAllDishes');
+        $api->get('getUserDishes', 'App\\Api\\V1\\Controllers\\DishController@getUserDishes');
+        $api->post('updateDishImg', 'App\\Api\\V1\\Controllers\\DishController@updateDishImg');
+        $api->post('changeType', 'App\\Api\\V1\\Controllers\\UserController@changeType');
     });
 
 
