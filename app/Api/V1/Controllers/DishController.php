@@ -25,15 +25,24 @@ class DishController extends Controller
         $file->move($destinationPath, $imageName);
         $id = Auth::id();
 
-        \DB::table('dishes')->insert(
+        $user = Auth::user();
+        
+        if ($user->type == "Vendor" || $user->type == "Both"){
+            \DB::table('dishes')->insert(
             ['userId' => $id, 'name' => $request->input('name'), 'type' => $request->input('type'), 
             'ingredients' => $request->input('ingredients'), 'number' => $request->input('number'),
             'date' => $request->input('date'), 'price' => $request->input('price'),
             'img' => url($destinationPath . $imageName), 'points' => 0, 'created_at' => \Carbon\Carbon::now()]
-        ); 
-
-        return response()
-        ->json(['Success' => 'Dish added']);  
+            ); 
+            return response()->json([
+                'status' => 'Dish Added',
+            ]);
+            }else {
+                return response()->json([
+                    'status' => 'Not a Vendor/Both',
+                ]);
+            }
+    
     }
 
     public function getAllDishes()
@@ -46,10 +55,19 @@ class DishController extends Controller
 
     public function getUserDishes(Request $request)
     {
-        $dishes = \DB::table('dishes')->where('userId', $request->userId)->get();
+        $user = Auth::user();
+        $dishes = \DB::table('dishes')->where('userId', $user->id)->get();
 
         return response()
         ->json($dishes);  
+    }
+
+    public function getDishById(Request $request)
+    {
+        $dish = \DB::table('dishes')->where('id', $request->id)->get();
+
+        return response()
+        ->json($dish);  
     }
     
     public function updateDishImg(Request $request){

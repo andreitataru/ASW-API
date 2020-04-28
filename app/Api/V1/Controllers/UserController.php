@@ -84,7 +84,59 @@ class UserController extends Controller
         return response()->json([
             'status' => 'ok',
         ]);
+    }
+
+    public function addMoney(Request $request)
+    {
+        $user = Auth::user();
+
+        $user->card = int($user->card) + int($request->money);
+
+        return response(ok, 200)->json([
+            'status' => 'ok',
+        ]);
+    }
+
+    public function buyDish(Request $request)  #dishId   ,  $number 
+    {
+        $user = Auth::user();
+
+        $dish = \DB::table('dishes')->where('id', $request->dishId)->first();
+
+        if ((int)$dish->number >= (int)$request->number && (float)$user->card >= ((float)$dish->price * (float)$request->number)){
+            $newNumber = (int)$dish->number - (int)$request->number;
+            \DB::table('dishes')
+            ->where('id', $request->dishId)
+            ->update(['number' => $newNumber]);
+
+            $amountPaid = (float)$dish->price * (float)$request->number;
+            $user->card = (float)$user->card - $amountPaid;
+            $user->save();
+            \DB::table('history')->insert(
+                ['idDish' => $request->dishId, 'idSeller' => $dish->userId, 'idCustumer' => $user->id, 
+                'number' => $request->number, 'ammountPaid' => $amountPaid]
+                ); 
+            
+            $seller = User::where('id', $dish->userId)->first();
+            $sellerMoney = $seller->card;
+            $seller->card = $sellerMoney + $amountPaid;
+            $seller->save();
+
+            return response()->json([
+                'status' => 'Dish Bought',
+            ]);
+        }else {
+            return response()->json([
+                'status' => 'Error',
+            ]);
+        }
+
+        
+
+        $user->card = int($user->card) + int($request->money);
 
     }
+
+
 
 }

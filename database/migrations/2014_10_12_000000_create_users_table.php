@@ -28,6 +28,7 @@ class CreateUsersTable extends Migration
             $table->string('email')->unique();
             $table->string('password');
             $table->tinyInteger('isAdmin')->default(0);
+            $table->float("card")->nullable();
             $table->string('avatar')->default('user.jpg');
             $table->rememberToken();
             $table->timestamps();
