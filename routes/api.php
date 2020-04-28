@@ -42,8 +42,10 @@ $api->version('v1', function (Router $api) {
         $api->get('getDishById', 'App\\Api\\V1\\Controllers\\DishController@getDishById');
         $api->post('updateDishImg', 'App\\Api\\V1\\Controllers\\DishController@updateDishImg');
         $api->post('changeType', 'App\\Api\\V1\\Controllers\\UserController@changeType');
-        $api->post('addMoney', 'App\\Api\\V1\\Controllers\\UserController@addMoney'); #money
-        $api->post('buyDish', 'App\\Api\\V1\\Controllers\\UserController@buyDish'); #dishId, #number
+        $api->post('addMoney', 'App\\Api\\V1\\Controllers\\UserController@addMoney');
+        $api->post('buyDish', 'App\\Api\\V1\\Controllers\\UserController@buyDish');
+        $api->get('GetAllHistory', 'App\\Api\\V1\\Controllers\\UserController@GetAllHistory');
+        $api->post('rateDish', 'App\\Api\\V1\\Controllers\\DishController@rateDish');
     });
 
 

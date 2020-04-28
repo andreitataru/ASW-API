@@ -90,9 +90,9 @@ class UserController extends Controller
     {
         $user = Auth::user();
 
-        $user->card = int($user->card) + int($request->money);
-
-        return response(ok, 200)->json([
+        $user->card = (int)$user->card + (int)$request->money;
+        $user->save();
+        return response()->json([
             'status' => 'ok',
         ]);
     }
@@ -114,7 +114,7 @@ class UserController extends Controller
             $user->save();
             \DB::table('history')->insert(
                 ['idDish' => $request->dishId, 'idSeller' => $dish->userId, 'idCustumer' => $user->id, 
-                'number' => $request->number, 'ammountPaid' => $amountPaid]
+                'number' => $request->number, 'ammountPaid' => $amountPaid, 'created_at' => \Carbon\Carbon::now()]
                 ); 
             
             $seller = User::where('id', $dish->userId)->first();
@@ -130,13 +130,13 @@ class UserController extends Controller
                 'status' => 'Error',
             ]);
         }
-
-        
-
-        $user->card = int($user->card) + int($request->money);
-
     }
 
+    public function GetAllHistory()
+    {
+        $history = \DB::table('history')->get();
+        return $history;
+    }
 
 
 }

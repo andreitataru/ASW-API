@@ -93,5 +93,32 @@ class DishController extends Controller
 
     }
 
+    public function rateDish(Request $request) {
+
+        $dish = \DB::table('dishes')->where('id', $request->id)->first();
+        $points = $dish->points;
+
+        if ($dish->timesRated == 0){
+            \DB::table('dishes')
+            ->where('id', $request->id)
+            ->update(['points' => $request->points, 'timesRated' => 1]);
+            return 0;
+        }else{
+            #( CurrentAvg * N + NewRating ) / ( N + 1)
+
+            $newPoints = ((float)$dish->points * (int)$dish->timesRated + (int)$request->points) / ((int)$dish->timesRated + 1);
+
+            \DB::table('dishes')
+            ->where('id', $request->id)
+            ->update(['points' => $newPoints, 'timesRated' => $dish->timesRated + 1]);
+
+            if ($dish->timesRated > 5){
+                return $dish->points;
+            }else{
+                return 0;
+            }
+            
+        }
+    }
 
 }
