@@ -170,8 +170,8 @@ class UserController extends Controller
             $user->timesRated = $user->timesRated +1;
             $user->save();
 
-            if ($dish->timesRated > 5){
-                return $dish->points;
+            if ($$user->timesRated > 5){
+                return $$user->points;
             }else{
                 return 0;
             }

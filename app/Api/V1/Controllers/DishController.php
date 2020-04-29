@@ -68,8 +68,7 @@ class DishController extends Controller
 
     public function getUserDishes(Request $request)
     {
-        $user = Auth::user();
-        $dishes = \DB::table('dishes')->where('userId', $user->id)->get();
+        $dishes = \DB::table('dishes')->where('userId', $request->userId)->get();
 
         return response()
         ->json($dishes);  
