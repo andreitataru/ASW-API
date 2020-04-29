@@ -45,7 +45,10 @@ $api->version('v1', function (Router $api) {
         $api->post('addMoney', 'App\\Api\\V1\\Controllers\\UserController@addMoney');
         $api->post('buyDish', 'App\\Api\\V1\\Controllers\\UserController@buyDish');
         $api->get('GetAllHistory', 'App\\Api\\V1\\Controllers\\UserController@GetAllHistory');
-        $api->post('rateDish', 'App\\Api\\V1\\Controllers\\DishController@rateDish');
+        $api->post('rateDish', 'App\\Api\\V1\\Controllers\\DishController@rateDish'); 
+        $api->post('rateVendor', 'App\\Api\\V1\\Controllers\\UserController@rateVendor');
+        $api->post('userInfo', 'App\\Api\\V1\\Controllers\\UserController@userInfo');
+        $api->post('editDish', 'App\\Api\\V1\\Controllers\\UserController@editDish');
     });
 
 

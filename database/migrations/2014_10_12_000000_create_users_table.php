@@ -30,6 +30,8 @@ class CreateUsersTable extends Migration
             $table->tinyInteger('isAdmin')->default(0);
             $table->float("card")->nullable();
             $table->string('avatar')->default('user.jpg');
+            $table->float('points')->default(0);
+            $table->integer('timesRated')->default(0);
             $table->rememberToken();
             $table->timestamps();
         });

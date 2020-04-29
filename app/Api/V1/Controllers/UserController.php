@@ -36,6 +36,12 @@ class UserController extends Controller
         return response()->json(Auth::guard()->user());
     }
 
+    public function userInfo(Request $request)
+    {
+        $user = User::where('id', $request->userId)->first();
+        return $user;
+    }
+
     public function GetAllUsers()
     {
         $id = Auth::id();
@@ -145,6 +151,33 @@ class UserController extends Controller
 
         $history = \DB::table('history')->where('idCustumer', $user->id)->get();
         return $history;
+    }
+
+    public function rateVendor(Request $request) {
+
+        $user = User::where('id', $request->vendorId)->first();
+        $points = $user->points;
+
+        if ($user->timesRated == 0){
+            $user->points = $request->points;
+            $user->timesRated = 1;
+            $user->save();
+            return 0;
+        }else{
+            #( CurrentAvg * N + NewRating ) / ( N + 1)
+
+            $newPoints = ((float)$user->points * (int)$user->timesRated + (int)$request->points) / ((int)$user->timesRated + 1);
+            $user->points = $newPoints;
+            $user->timesRated = $user->timesRated +1;
+            $user->save();
+
+            if ($dish->timesRated > 5){
+                return $dish->points;
+            }else{
+                return 0;
+            }
+            
+        }
     }
 
 }

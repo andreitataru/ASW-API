@@ -46,6 +46,17 @@ class DishController extends Controller
     
     }
 
+    public function editDish(Request $request)
+    {
+        \DB::table('dishes')
+        ->where('id', $request->id)
+        ->update(['data' => $request->newData, 'number' => $request->newNumber]);
+        
+        return response()->json([
+            'status' => 'Dish Edited',
+        ]);
+    }
+
     public function getAllDishes()
     {
         $dishes = \DB::table('dishes')->get(); 
