@@ -26,6 +26,8 @@ class CreateDishesTable extends Migration
             $table->string('img');
             $table->integer('timesRated')->default(0);
             $table->string('local');
+            $table->string('firstName');
+            $table->string('lastName');
             $table->timestamps();
         });
     }

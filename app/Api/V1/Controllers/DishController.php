@@ -33,7 +33,8 @@ class DishController extends Controller
             'ingredients' => $request->input('ingredients'), 'number' => $request->input('number'),
             'date' => $request->input('date'), 'price' => $request->input('price'),
             'img' => url($destinationPath . $imageName), 'points' => 0, 'created_at' => \Carbon\Carbon::now(), 
-            'updated_at' => \Carbon\Carbon::now(), 'local' => $user->district]
+            'updated_at' => \Carbon\Carbon::now(), 'local' => $user->district, 'firstName' => $user->firstName,
+            'lastName' => $user->lastName]
             ); 
             return response()->json([
                 'status' => 'Dish Added',
@@ -50,7 +51,7 @@ class DishController extends Controller
     {
         \DB::table('dishes')
         ->where('id', $request->id)
-        ->update(['data' => $request->newData, 'number' => $request->newNumber]);
+        ->update(['date' => $request->newData, 'number' => $request->newNumber]);
         
         return response()->json([
             'status' => 'Dish Edited',

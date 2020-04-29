@@ -164,7 +164,6 @@ class UserController extends Controller
             $user->save();
             return 0;
         }else{
-            #( CurrentAvg * N + NewRating ) / ( N + 1)
 
             $newPoints = ((float)$user->points * (int)$user->timesRated + (int)$request->points) / ((int)$user->timesRated + 1);
             $user->points = $newPoints;
