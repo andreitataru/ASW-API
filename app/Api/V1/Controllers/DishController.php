@@ -32,7 +32,8 @@ class DishController extends Controller
             ['userId' => $id, 'name' => $request->input('name'), 'type' => $request->input('type'), 
             'ingredients' => $request->input('ingredients'), 'number' => $request->input('number'),
             'date' => $request->input('date'), 'price' => $request->input('price'),
-            'img' => url($destinationPath . $imageName), 'points' => 0, 'created_at' => \Carbon\Carbon::now()]
+            'img' => url($destinationPath . $imageName), 'points' => 0, 'created_at' => \Carbon\Carbon::now(), 
+            'updated_at' => \Carbon\Carbon::now(), 'local' => $user->district]
             ); 
             return response()->json([
                 'status' => 'Dish Added',

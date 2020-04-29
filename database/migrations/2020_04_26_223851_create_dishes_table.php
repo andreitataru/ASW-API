@@ -25,6 +25,7 @@ class CreateDishesTable extends Migration
             $table->float('points')->default(0);
             $table->string('img');
             $table->integer('timesRated')->default(0);
+            $table->string('local');
             $table->timestamps();
         });
     }

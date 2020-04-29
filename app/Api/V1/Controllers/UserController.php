@@ -114,7 +114,8 @@ class UserController extends Controller
             $user->save();
             \DB::table('history')->insert(
                 ['idDish' => $request->dishId, 'idSeller' => $dish->userId, 'idCustumer' => $user->id, 
-                'number' => $request->number, 'ammountPaid' => $amountPaid, 'created_at' => \Carbon\Carbon::now()]
+                'number' => $request->number, 'ammountPaid' => $amountPaid, 'created_at' => \Carbon\Carbon::now(),
+                'dataEntrega' => $request->dataEntrega]
                 ); 
             
             $seller = User::where('id', $dish->userId)->first();
@@ -138,5 +139,12 @@ class UserController extends Controller
         return $history;
     }
 
+    public function getHistoryCurrentUser()
+    {
+        $user = Auth::user();
+
+        $history = \DB::table('history')->where('idCustumer', $user->id)->get();
+        return $history;
+    }
 
 }

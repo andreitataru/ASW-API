@@ -20,6 +20,7 @@ class CreateHistoryTable extends Migration
             $table->string('idCustumer');
             $table->integer('number');
             $table->float('ammountPaid');
+            $table->string('dataEntrega');
             $table->timestamps();
         });
     }
