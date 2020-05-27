@@ -231,15 +231,27 @@ class UserController extends Controller
             ->orderBy('created_at', 'asc')
             ->get();
 
-        foreach ($messages as $message) {
-            if (($message->idReceiver != $user->id) && (in_array($message->idReceiver, $ids) == false)){
-                $ids[] = $message->idReceiver;
-                $firstName = User::findOrFail($message->idReceiver)->firstName;
-                $lastName = User::findOrFail($message->idReceiver)->lastName;
-
-                $output[] = $message->idReceiver . ',' . $firstName . ',' . $lastName;
+            foreach ($messages as $message) {
+                if ($user->id == $message->idSender) {
+                    if (($message->idReceiver != $user->id) && (in_array($message->idReceiver, $ids) == false)){
+                    $ids[] = $message->idReceiver;
+                    $firstName = User::findOrFail($message->idReceiver)->firstName;
+                    $lastName = User::findOrFail($message->idReceiver)->lastName;
+    
+                    $output[] = $message->idReceiver . ',' . $firstName . ',' . $lastName;
+                    }
+                }
+                else {
+                    if (($message->idSender != $user->id) && (in_array($message->idSender, $ids) == false)){
+                    $ids[] = $message->idSender;
+                    $firstName = User::findOrFail($message->idSender)->firstName;
+                    $lastName = User::findOrFail($message->idSender)->lastName;
+    
+                    $output[] = $message->idSender . ',' . $firstName . ',' . $lastName;
+                    }
+                }
+                
             }
-        }
 
         return response()
         ->json($output);  
