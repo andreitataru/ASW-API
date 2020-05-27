@@ -49,6 +49,8 @@ $api->version('v1', function (Router $api) {
         $api->post('rateVendor', 'App\\Api\\V1\\Controllers\\UserController@rateVendor');
         $api->post('userInfo', 'App\\Api\\V1\\Controllers\\UserController@userInfo');
         $api->post('editDish', 'App\\Api\\V1\\Controllers\\UserController@editDish');
+        $api->post('SendMessage', 'App\\Api\\V1\\Controllers\\UserController@SendMessage');
+        $api->post('GetMessages', 'App\\Api\\V1\\Controllers\\UserController@GetMessages');
     });
 
 
@@ -70,9 +72,77 @@ $api->version('v1', function (Router $api) {
         ]);
     });
 
-    $api->get('hello', function() {
-        return response()->json([
-            'message' => 'This is a simple example of item returned by your APIs. Everyone can see it.'
-        ]);
+    $api->post('server', function() {
+        require_once('nusoap.php');
+        $server = new \nusoap_server();
+
+        $server->configureWSDL('TestService', false, url('server'));
+
+        $server->register('InfoPrato',
+            array('input' => 'xsd:string'),
+            array('output' => 'xsd:string')
+        );
+
+        $server->register('RealizaCompra',
+            array('input' => 'xsd:string'),
+            array('output' => 'xsd:string')
+        );
+
+        function InfoPrato($input){
+            $dish = \DB::table('dishes')->where('id', $input)->first();
+        
+            $array = (array) $dish;
+                
+            $string='';
+
+            $numItems = count($array);
+            $i = 0;
+            foreach($array as $value) {
+                if(++$i === $numItems) {
+                    $string .= $value;
+                }
+                else{
+                    $string .= $value . ',';
+                }
+            }   
+            
+            return $string;
+        }
+
+        function RealizaCompra($number, $dishId, $dataEntrega)  #dishId   ,  $number 
+        {
+            $user = Auth::user();
+    
+            $dish = \DB::table('dishes')->where('id', $dishId)->first();
+    
+            if ((int)$dish->number >= (int)$number && (float)$user->card >= ((float)$dish->price * (float)$number)){
+                $newNumber = (int)$dish->number - (int)$number;
+                \DB::table('dishes')
+                ->where('id', $dishId)
+                ->update(['number' => $newNumber]);
+
+                $amountPaid = (float)$dish->price * (float)$number;
+                $user->card = (float)$user->card - $amountPaid;
+                $user->save();
+                \DB::table('history')->insert(
+                    ['idDish' => $dishId, 'idSeller' => $dish->userId, 'idCustumer' => $user->id, 
+                    'number' => $number, 'ammountPaid' => $amountPaid, 'created_at' => \Carbon\Carbon::now(),
+                    'dataEntrega' => $dataEntrega]
+                    ); 
+                
+                $seller = User::where('id', $dish->userId)->first();
+                $sellerMoney = $seller->card;
+                $seller->card = $sellerMoney + $amountPaid;
+                $seller->save();
+    
+                return 'Aceite';
+            }else {
+                return 'Não aceite';
+            }
+        }
+
+        $rawPostData = file_get_contents("php://input");
+        return \Response::make($server->service($rawPostData), 200, array('Content-Type' => 'text/xml; charset=ISO-8859-1'));
     });
+
 });

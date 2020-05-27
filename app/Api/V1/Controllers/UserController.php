@@ -179,4 +179,39 @@ class UserController extends Controller
         }
     }
 
+    public function SendMessage(Request $request) { 
+
+        $user = Auth::User();
+
+         \DB::table('message')->insert(        #idReceiver  #message
+                    ['idSender' => $user -> id, 
+                    'idReceiver' => $request->input('idReceiver'), 
+                    'message' => $request->input('message'),
+                    'created_at' => \Carbon\Carbon::now()]
+                ); 
+    }
+
+    public function GetMessages(Request $request) {  #idReceiver
+
+        $user = Auth::User();
+
+        $messages = \DB::table('message')->select('idSender','idReceiver','message','created_at')
+            ->where(function($q) use($request,$user) {
+                $q->where('idSender', $user -> id)
+                ->Where('idReceiver', $request->input('idReceiver'));
+            })
+            ->orWhere(function($q2) use($request,$user) {
+                $q2->where('idSender', $request->input('idReceiver'))
+                ->Where('idReceiver', $user -> id);
+            })
+            ->orderBy('created_at', 'asc')
+            ->take(15)
+            ->get();
+            
+
+        return response()
+        ->json($messages);  
+
+    }
+
 }
