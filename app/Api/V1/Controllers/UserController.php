@@ -205,13 +205,44 @@ class UserController extends Controller
                 ->Where('idReceiver', $user -> id);
             })
             ->orderBy('created_at', 'asc')
-            ->take(15)
             ->get();
             
 
         return response()
         ->json($messages);  
 
+    }
+
+    public function GetActiveChats(Request $request) {  #idReceiver
+
+        $user = Auth::User();
+        
+        $ids = array();
+        
+        $output = array();
+
+        $messages = \DB::table('message')->select('idSender','idReceiver','message','created_at')
+            ->where(function($q) use($request,$user) {
+                $q->where('idSender', $user -> id);
+            })
+            ->orWhere(function($q2) use($request,$user) {
+                $q2->where('idReceiver', $user -> id);
+            })
+            ->orderBy('created_at', 'asc')
+            ->get();
+
+        foreach ($messages as $message) {
+            if (($message->idReceiver != $user->id) && (in_array($message->idReceiver, $ids) == false)){
+                $ids[] = $message->idReceiver;
+                $firstName = User::findOrFail($message->idReceiver)->firstName;
+                $lastName = User::findOrFail($message->idReceiver)->lastName;
+
+                $output[] = $message->idReceiver . ',' . $firstName . ',' . $lastName;
+            }
+        }
+
+        return response()
+        ->json($output);  
     }
 
 }

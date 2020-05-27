@@ -51,6 +51,7 @@ $api->version('v1', function (Router $api) {
         $api->post('editDish', 'App\\Api\\V1\\Controllers\\UserController@editDish');
         $api->post('SendMessage', 'App\\Api\\V1\\Controllers\\UserController@SendMessage');
         $api->post('GetMessages', 'App\\Api\\V1\\Controllers\\UserController@GetMessages');
+        $api->get('GetActiveChats', 'App\\Api\\V1\\Controllers\\UserController@GetActiveChats');
     });
 
 
